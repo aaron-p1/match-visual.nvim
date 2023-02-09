@@ -11,11 +11,12 @@
         :fn {: join : escape : matchadd : matchdelete : mode : getpos}}
        vim)
 
-(local default-config {:match_id 118 :hl_group :Visual})
+(local default-config {:min_length 1 :hl_group :Visual :match_id 118})
 
 (local highlight-group :VisualMatch)
 (nvim_set_hl 0 highlight-group {:default true :link default-config.hl_group})
 
+(var min-length default-config.min_length)
 (var default-match-id default-config.match_id)
 (var visual-matches [])
 
@@ -33,11 +34,12 @@
                   (nvim_buf_get_lines 0 start-row (+ 1 end-row) false)
                   (nvim_buf_get_text 0 start-row start-col end-row
                                      (+ 1 end-col) {}))
-        match-string (lines->match-string lines)]
-    (when match-string
+        match-length (length (join lines " "))
+        ?match-string (lines->match-string lines)]
+    (when (and ?match-string (>= match-length min-length))
       (let [wins (nvim_tabpage_list_wins 0)]
         (icollect [_ win-id (ipairs wins)]
-          (let [match-id (matchadd group match-string 10 default-match-id
+          (let [match-id (matchadd group ?match-string 10 default-match-id
                                    {:window win-id})]
             [match-id win-id]))))))
 
@@ -67,12 +69,14 @@
   (let [mode (mode)]
     (when (tbl_contains [:v :V] mode)
       (let [line-wise? (= mode :V)
-            matches (add-matches highlight-group line-wise?
-                                 (get-range line-wise?))]
-        (set visual-matches (or matches []))))))
+            ?matches (add-matches highlight-group line-wise?
+                                  (get-range line-wise?))]
+        (set visual-matches (or ?matches []))))))
 
 (lambda setup [?user-config]
   (let [user-config (or ?user-config {})]
+    (if user-config.min_length
+        (set min-length user-config.min_length))
     (if user-config.match_id
         (set-default-match-id user-config.match_id))
     (if user-config.hl_group

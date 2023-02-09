@@ -4,8 +4,6 @@
 
  local group = nvim_create_augroup("MatchVisual", {clear = true})
  nvim_create_autocmd("CursorMoved", {group = group, callback = match_visual})
- nvim_create_autocmd("ModeChanged", {group = group, pattern = "[vV]:*", callback = remove_visual_selection})
+ nvim_create_autocmd("ModeChanged", {group = group, pattern = "*:[vV]", callback = match_visual})
 
-
-
- return nvim_create_autocmd("ModeChanged", {group = group, pattern = "*:[vV]", callback = match_visual})
+ return nvim_create_autocmd("ModeChanged", {group = group, pattern = "[vV]:*", callback = remove_visual_selection})
