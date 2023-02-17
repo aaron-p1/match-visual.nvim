@@ -45,7 +45,7 @@
 
 (lambda remove-visual-selection []
   (each [_ [match-id win-id] (ipairs visual-matches)]
-    (if (not= -1 match-id) (matchdelete match-id win-id)))
+    (if (not= -1 match-id) (pcall matchdelete match-id win-id)))
   (set visual-matches []))
 
 (lambda order-positions [[start-row start-col] [end-row end-col]]

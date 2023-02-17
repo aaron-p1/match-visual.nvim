@@ -16,7 +16,7 @@ plugin/%.lua: fennel/plugin/%.fnl
 	@mkdir -p $(@D)
 	fennel --globals $(luaGlobals) --correlate --compile $< > $@
 
-format: $(SRC)
+format: $(SRC) $(SRC_PLUGIN)
 	fnlfmt --fix $<
 
 clean:

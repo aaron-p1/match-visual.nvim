@@ -45,7 +45,7 @@
 
  local function remove_visual_selection()
  for _, _13_ in ipairs(visual_matches) do local _each_14_ = _13_ local match_id = _each_14_[1] local win_id = _each_14_[2]
- if (-1 ~= match_id) then matchdelete(match_id, win_id) else end end
+ if (-1 ~= match_id) then pcall(matchdelete, match_id, win_id) else end end
  visual_matches = {} return nil end
 
  local function order_positions(_16_, _18_) local _arg_17_ = _16_ local start_row = _arg_17_[1] local start_col = _arg_17_[2] local _arg_19_ = _18_ local end_row = _arg_19_[1] local end_col = _arg_19_[2] _G.assert((nil ~= end_col), "Missing argument end-col on fennel/src/match-visual.fnl:51") _G.assert((nil ~= end_row), "Missing argument end-row on fennel/src/match-visual.fnl:51") _G.assert((nil ~= start_col), "Missing argument start-col on fennel/src/match-visual.fnl:51") _G.assert((nil ~= start_row), "Missing argument start-row on fennel/src/match-visual.fnl:51")
