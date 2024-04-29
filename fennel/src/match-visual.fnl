@@ -17,11 +17,7 @@
 (nvim_set_hl 0 highlight-group {:default true :link default-config.hl_group})
 
 (var min-length default-config.min_length)
-(var default-match-id default-config.match_id)
 (var visual-matches [])
-
-(lambda set-default-match-id [id]
-  (set default-match-id id))
 
 (lambda lines->match-string [lines]
   (let [escaped-lines (tbl_map #(escape $1 "\\") lines)
@@ -39,8 +35,7 @@
     (when (and ?match-string (>= match-length min-length))
       (let [wins (nvim_tabpage_list_wins 0)]
         (icollect [_ win-id (ipairs wins)]
-          (let [match-id (matchadd group ?match-string 10 default-match-id
-                                   {:window win-id})]
+          (let [match-id (matchadd group ?match-string 100 -1 {:window win-id})]
             [match-id win-id]))))))
 
 (lambda remove-visual-selection []
@@ -77,12 +72,9 @@
   (let [user-config (or ?user-config {})]
     (if user-config.min_length
         (set min-length user-config.min_length))
-    (if user-config.match_id
-        (set-default-match-id user-config.match_id))
     (if user-config.hl_group
         (nvim_set_hl 0 highlight-group {:link user-config.hl_group}))))
 
 {: setup
- :set_default_match_id set-default-match-id
  :match_visual match-visual
  :remove_visual_selection remove-visual-selection}
